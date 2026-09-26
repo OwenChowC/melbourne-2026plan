@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>墨爾本慢遊日記 | Melbourne Trip</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgBase: '#FAF7F2',    // 溫暖紙張背景
+                        textMain: '#4A4A4A',  // 柔和深灰
+                        primary: '#8E9B90',   // 莫蘭迪鼠尾草綠
+                        accent: '#C5B6A6',    // 奶茶大地色
+                        highlight: '#D97762', // 柔和磚紅 (用於重要提示)
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Noto Serif TC"', 'serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px rgba(0, 0, 0, 0.04)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #e5e5e5; }
+        /* 隱藏滾動條但保持可滾動 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .nav-btn.active { color: #8E9B90; font-weight: bold; }
+        .nav-btn { color: #A3A3A3; transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="text-textMain font-sans antialiased flex justify-center">
+
+    <!-- App Container (Mobile First) -->
+    <div class="w-full max-w-md bg-bgBase min-h-screen relative shadow-2xl flex flex-col overflow-hidden">
+        
+        <!-- Header -->
+        <header class="pt-12 pb-4 px-6 bg-bgBase/90 backdrop-blur-md sticky top-0 z-40">
+            <h1 class="font-serif text-2xl font-bold text-center tracking-widest text-textMain">墨爾本慢遊<span class="text-primary text-3xl">.</span></h1>
+            <p class="text-center text-xs text-gray-500 mt-1 uppercase tracking-widest">18 Oct - 26 Oct, 2026</p>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto no-scrollbar px-5 pb-24 pt-2" id="main-content">
+            
+            <!-- ==============================
+                 PLAN (行程表)
+            =============================== -->
+            <section id="tab-plan" class="tab-content active transition-opacity duration-300">
+                <!-- 航班與住宿卡片 -->
+                <div class="bg-white rounded-3xl p-5 shadow-soft mb-8">
+                    <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-3">
+                        <i class="fas fa-plane-departure text-primary text-xl"></i>
+                        <div>
+                            <p class="text-xs text-gray-400">去程 | 18/10 20:05</p>
+                            <p class="text-sm font-medium">HKG <i class="fas fa-arrow-right mx-1 text-xs"></i> MEL (QF030)</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 mb-4 border-b border-gray-100 pb-3">
+                        <i class="fas fa-plane-arrival text-primary text-xl"></i>
+                        <div>
+                            <p class="text-xs text-gray-400">回程 | 26/10 11:05</p>
+                            <p class="text-sm font-medium">MEL <i class="fas fa-arrow-right mx-1 text-xs"></i> HKG (QF029)</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 pt-1">
+                        <i class="fas fa-bed text-accent text-xl mt-1"></i>
+                        <div>
+                            <p class="text-xs text-gray-400">住宿 (Docklands)</p>
+                            <p class="text-sm font-medium">Melbourne Private Apartments</p>
+                            <a href="https://maps.google.com/?q=915+Collins+Street,+Docklands,+Melbourne" target="_blank" class="inline-block mt-2 text-xs bg-gray-50 text-gray-600 px-3 py-1 rounded-full border border-gray-200"><i class="fas fa-map-marker-alt mr-1"></i>開啟導航</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 每日行程時間軸 -->
+                <div class="space-y-6">
+                    <!-- D1 & D2 -->
+                    <div>
+                        <h2 class="font-serif text-lg font-bold mb-4 text-primary">Day 1-2 | 抵達與市區探索</h2>
+                        <div class="border-l-2 border-accent/30 ml-2 pl-6 relative space-y-5">
+                            <div class="relative"><div class="absolute w-3 h-3 bg-accent rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs text-gray-400">18/10 20:05</span>
+                                <p class="text-sm font-medium">香港機場搭乘 QF030 飛往墨爾本</p>
+                            </div>
+                            <div class="relative"><div class="absolute w-3 h-3 bg-accent rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs text-gray-400">19/10 08:20</span>
+                                <p class="text-sm font-medium">抵達墨爾本，搭乘 SkyBus 前往公寓寄放行李</p>
+                            </div>
+                            <div class="relative bg-white p-4 rounded-2xl shadow-soft mt-2"><div class="absolute w-3 h-3 border-2 border-primary bg-white rounded-full -left-[31px] top-5"></div>
+                                <span class="text-xs font-bold text-primary">10:00 - 12:00</span>
+                                <p class="text-sm font-medium mt-1 mb-2">Queen Victoria Market (維多利亞女王市場)</p>
+                                <a href="https://maps.google.com/?q=Queen+Victoria+Market" target="_blank" class="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full"><i class="fas fa-map"></i> Google Maps</a>
+                            </div>
+                            <div class="relative"><div class="absolute w-3 h-3 bg-accent rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs text-gray-400">12:15 - 13:45</span>
+                                <p class="text-sm font-medium">Degraves Street 咖啡巷弄</p>
+                            </div>
+                            <div class="relative"><div class="absolute w-3 h-3 bg-accent rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs text-gray-400">14:00 - 15:30</span>
+                                <p class="text-sm font-medium">漫步 Royal Arcade (皇家拱廊)</p>
+                            </div>
+                            <div class="relative"><div class="absolute w-3 h-3 bg-accent rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs text-gray-400">17:30</span>
+                                <p class="text-sm font-medium">Melbourne Skydeck 俯瞰墨爾本夜景</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- D3 -->
+                    <div>
+                        <h2 class="font-serif text-lg font-bold mb-4 text-primary">Day 3 | 淘金歷史之旅</h2>
+                        <div class="border-l-2 border-accent/30 ml-2 pl-6 relative space-y-5">
+                            <div class="relative"><div class="absolute w-3 h-3 bg-highlight rounded-full -left-[31px] top-1 shadow-[0_0_8px_rgba(217,119,98,0.6)]"></div>
+                                <span class="text-xs font-bold text-highlight bg-highlight/10 px-2 py-0.5 rounded">09:30 重要提醒</span>
+                                <p class="text-sm font-medium mt-1">市區辦理租車手續並取車</p>
+                            </div>
+                            <div class="relative bg-white p-4 rounded-2xl shadow-soft mt-2"><div class="absolute w-3 h-3 border-2 border-primary bg-white rounded-full -left-[31px] top-5"></div>
+                                <span class="text-xs font-bold text-primary">11:30 - 16:00</span>
+                                <p class="text-sm font-medium mt-1 mb-2">Sovereign Hill (疏芬山金礦場)</p>
+                                <p class="text-xs text-gray-500 mb-2">觀賞巡邏表演、體驗溪邊淘真金、參觀地底礦坑</p>
+                                <a href="https://maps.google.com/?q=Sovereign+Hill" target="_blank" class="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full"><i class="fas fa-map"></i> Google Maps</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- D4 -->
+                    <div>
+                        <h2 class="font-serif text-lg font-bold mb-4 text-primary">Day 4 | 壯麗大洋路</h2>
+                        <div class="border-l-2 border-accent/30 ml-2 pl-6 relative space-y-5">
+                            <div class="relative"><div class="absolute w-3 h-3 bg-highlight rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs font-bold text-highlight bg-highlight/10 px-2 py-0.5 rounded">08:00 準時出發</span>
+                                <p class="text-sm font-medium mt-1">從 Docklands 出發前往大洋路</p>
+                            </div>
+                            <div class="relative"><div class="absolute w-3 h-3 bg-accent rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs text-gray-400">09:30</span>
+                                <p class="text-sm font-medium">大洋路歷史木牌樓合照</p>
+                            </div>
+                            <div class="relative bg-white p-4 rounded-2xl shadow-soft mt-2"><div class="absolute w-3 h-3 border-2 border-primary bg-white rounded-full -left-[31px] top-5"></div>
+                                <span class="text-xs font-bold text-primary">14:00 - 18:30 重點行程</span>
+                                <p class="text-sm font-medium mt-1">大奧特威國家公園找野生樹熊</p>
+                                <p class="text-sm font-medium">十二門徒石、吉布森石階、洛克阿德峽灣</p>
+                                <div class="mt-3">
+                                    <a href="https://maps.google.com/?q=Twelve+Apostles+Marine+National+Park" target="_blank" class="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full"><i class="fas fa-map"></i> 門徒石定位</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- D5, D6, D7... (結構縮減以維持效能與可讀性，其餘依此類推) -->
+                    <div>
+                        <h2 class="font-serif text-lg font-bold mb-4 text-primary">Day 5-6 | 企鵝與文藝</h2>
+                        <div class="border-l-2 border-accent/30 ml-2 pl-6 relative space-y-5">
+                            <div class="relative"><div class="absolute w-3 h-3 bg-accent rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs text-gray-400">D5 | 11:00</span>
+                                <p class="text-sm font-medium">Brighton 彩虹小屋合照</p>
+                            </div>
+                            <div class="relative"><div class="absolute w-3 h-3 bg-accent rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs text-gray-400">D5 | 15:00</span>
+                                <p class="text-sm font-medium">維多利亞州立圖書館 & 塗鴉巷</p>
+                            </div>
+                            <div class="relative bg-white p-4 rounded-2xl shadow-soft mt-2"><div class="absolute w-3 h-3 border-2 border-primary bg-white rounded-full -left-[31px] top-5"></div>
+                                <span class="text-xs font-bold text-primary">D6 | 12:35 - 15:45</span>
+                                <p class="text-sm font-medium mt-1 mb-2">Lakeside ➔ Gembrook 火車漫步</p>
+                            </div>
+                            <div class="relative bg-white p-4 rounded-2xl shadow-soft mt-2"><div class="absolute w-3 h-3 border-2 border-primary bg-white rounded-full -left-[31px] top-5"></div>
+                                <span class="text-xs font-bold text-primary">D6 | 19:00 - 21:00</span>
+                                <p class="text-sm font-medium mt-1 mb-2">菲利普島神仙企鵝歸巢 (Underground Viewing)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="font-serif text-lg font-bold mb-4 text-primary">Day 7-9 | 購物與賦歸</h2>
+                        <div class="border-l-2 border-accent/30 ml-2 pl-6 relative space-y-5">
+                            <div class="relative"><div class="absolute w-3 h-3 bg-accent rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs text-gray-400">D7 | 10:00</span>
+                                <p class="text-sm font-medium">St Kilda Luna Park (月亮公園)</p>
+                            </div>
+                            <div class="relative"><div class="absolute w-3 h-3 bg-accent rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs text-gray-400">D7 | 12:00</span>
+                                <p class="text-sm font-medium">DFO South Wharf Outlet 洗錢</p>
+                            </div>
+                            <div class="relative"><div class="absolute w-3 h-3 bg-accent rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs text-gray-400">D8 | 10:30 - 17:30</span>
+                                <p class="text-sm font-medium">Chadstone 南半球最大購物中心</p>
+                            </div>
+                            <div class="relative"><div class="absolute w-3 h-3 bg-highlight rounded-full -left-[31px] top-1"></div>
+                                <span class="text-xs font-bold text-highlight bg-highlight/10 px-2 py-0.5 rounded">D9 | 11:05 班機</span>
+                                <p class="text-sm font-medium mt-1">墨爾本機場搭乘 QF029 返回香港</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==============================
+                 GUIDE (深度導覽)
+            =============================== -->
+            <section id="tab-guide" class="tab-content transition-opacity duration-300">
+                <div class="mb-6">
+                    <h2 class="font-serif text-2xl font-bold mb-2">深度探索</h2>
+                    <p class="text-xs text-gray-500">墨爾本的歷史與奇景，出發前先來點冷知識。</p>
+                </div>
+
+                <!-- 導覽卡片 1 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-soft mb-6">
+                    <div class="h-40 bg-accent relative flex items-end p-4" style="background-image: url('https://images.unsplash.com/photo-1517436073-3b1b1b1b1b1b?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <h3 class="font-serif text-xl text-white relative z-10">疏芬山金礦場<br><span class="text-sm font-sans font-normal opacity-80">Sovereign Hill</span></h3>
+                    </div>
+                    <div class="p-5 text-sm leading-relaxed text-gray-600">
+                        <p class="mb-3"><strong class="text-primary">歷史背景：</strong>1850年代，墨爾本周邊發現了大量黃金，引發了世界級的「淘金熱」(Gold Rush)，讓墨爾本一度成為世界上最富有的城市，被稱為「新金山」。</p>
+                        <p><strong class="text-primary">冷知識：</strong>園區內的工作人員都穿著19世紀的服飾，且完全遵循當時的生活方式。你可以去溪邊拿著鐵盤淘金，如果真的淘到金沙，是可以帶回家的喔！</p>
+                    </div>
+                </div>
+
+                <!-- 導覽卡片 2 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-soft mb-6">
+                    <div class="h-40 bg-accent relative flex items-end p-4" style="background-image: url('https://images.unsplash.com/photo-1588001832198-c15cff59b078?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <h3 class="font-serif text-xl text-white relative z-10">大洋路與十二門徒石<br><span class="text-sm font-sans font-normal opacity-80">Great Ocean Road</span></h3>
+                    </div>
+                    <div class="p-5 text-sm leading-relaxed text-gray-600">
+                        <p class="mb-3"><strong class="text-primary">地理奇觀：</strong>大洋路是一條由一次世界大戰退役士兵耗時14年建成的紀念公路。十二門徒石是石灰岩柱，經過南冰洋千萬年的風化與海浪侵蝕而形成。</p>
+                        <p><strong class="text-highlight">注意：</strong>其實現在只剩下 8 座門徒石了！因為持續的侵蝕，有些岩柱已經倒塌。趁著它們還在，一定要好好感受大自然的鬼斧神工。</p>
+                    </div>
+                </div>
+
+                <!-- 導覽卡片 3 (帶地圖) -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-soft mb-6 p-5">
+                    <h3 class="font-serif text-lg font-bold text-primary mb-1">St Kilda 月亮公園</h3>
+                    <p class="text-xs text-gray-500 mb-3">Luna Park Melbourne</p>
+                    <p class="text-sm leading-relaxed text-gray-600 mb-4">
+                        自1912年營運至今的百年遊樂園，那張巨大的笑臉大門是墨爾本最具代表性的地標之一。旁邊的 St Kilda 海灘更是看夕陽的好去處。
+                    </p>
+                    <!-- OSM 地圖 -->
+                    <div class="rounded-xl overflow-hidden border border-gray-100">
+                        <iframe width="100%" height="200" src="https://www.openstreetmap.org/export/embed.html?bbox=144.9740,-37.8687,144.9814,-37.8643&layer=mapnik&marker=-37.8665,144.9777" class="border-none pointer-events-none"></iframe>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==============================
+                 WALLET (記帳與匯率)
+            =============================== -->
+            <section id="tab-wallet" class="tab-content transition-opacity duration-300">
+                <!-- 匯率計算器 -->
+                <div class="bg-white rounded-3xl p-5 shadow-soft mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-serif text-lg font-bold">匯率換算與記帳</h2>
+                        <div class="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-lg border">
+                            1 AUD = <input type="number" id="exchange-rate" value="5.15" class="w-12 bg-transparent text-center font-bold text-primary outline-none" onchange="saveRate(); renderExpenses();"> HKD
+                        </div>
+                    </div>
+                    
+                    <div class="bg-bgBase rounded-2xl p-4 border border-accent/20">
+                        <input type="text" id="exp-name" placeholder="花費品項 (如: 晚餐)" class="w-full bg-white text-sm px-4 py-2.5 rounded-xl border-none focus:ring-2 focus:ring-primary/50 outline-none mb-3 shadow-sm">
+                        
+                        <div class="flex gap-2 mb-3">
+                            <span class="bg-white flex items-center px-3 rounded-xl text-gray-500 font-bold shadow-sm">A$</span>
+                            <input type="text" id="exp-amount" placeholder="金額 (支援計算, 如: 50+20*2)" class="flex-1 bg-white text-sm px-4 py-2.5 rounded-xl border-none focus:ring-2 focus:ring-primary/50 outline-none shadow-sm font-mono">
+                        </div>
+
+                        <!-- 拍照上傳區塊 -->
+                        <div class="flex items-center gap-3 mb-4">
+                            <label class="flex-1 bg-white border border-dashed border-gray-300 text-gray-500 text-xs text-center py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                                <i class="fas fa-camera mr-1"></i> 附上單據/照片
+                                <input type="file" id="exp-file" accept="image/*" class="hidden">
+                            </label>
+                            <img id="photo-preview" class="w-10 h-10 object-cover rounded-lg hidden border border-gray-200">
+                            <input type="hidden" id="exp-photo-data">
+                        </div>
+
+                        <button onclick="addExpense()" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-md active:scale-95 transition-transform">
+                            計算並記帳
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 總花費與列表 -->
+                <div class="flex justify-between items-end mb-3 px-2">
+                    <h3 class="font-serif font-bold text-gray-700">記帳明細</h3>
+                    <div class="text-right">
+                        <p class="text-[10px] text-gray-400">總計 (HKD)</p>
+                        <p class="font-bold text-lg text-primary" id="total-hkd">$ 0.00</p>
+                    </div>
+                </div>
+                <div id="expense-list" class="space-y-3 pb-4">
+                    <!-- JS 動態生成 -->
+                </div>
+            </section>
+
+            <!-- ==============================
+                 LISTS (清單)
+            =============================== -->
+            <section id="tab-lists" class="tab-content transition-opacity duration-300">
+                <h2 class="font-serif text-2xl font-bold mb-4">行前清單</h2>
+                
+                <div class="bg-white rounded-3xl p-5 shadow-soft mb-8" id="checklist-container">
+                    <!-- Checklists 透過 JS 渲染 -->
+                </div>
+
+                <h2 class="font-serif text-2xl font-bold mb-4">備忘錄</h2>
+                <div class="bg-white rounded-3xl p-5 shadow-soft">
+                    <textarea id="memo-input" rows="4" placeholder="在此輸入筆記，貼上網址會自動變成連結喔！" class="w-full bg-bgBase rounded-xl p-4 text-sm outline-none resize-none focus:ring-1 focus:ring-primary/50 mb-3 border border-gray-100"></textarea>
+                    <div id="memo-display" class="text-sm text-gray-600 bg-gray-50 p-4 rounded-xl min-h-[80px] whitespace-pre-wrap break-words border border-gray-100"></div>
+                </div>
+            </section>
+
+            <!-- ==============================
+                 INFO (資訊)
+            =============================== -->
+            <section id="tab-info" class="tab-content transition-opacity duration-300">
+                <h2 class="font-serif text-2xl font-bold mb-4">實用資訊</h2>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <a href="http://www.bom.gov.au/vic/forecasts/melbourne.shtml" target="_blank" class="bg-white rounded-2xl p-4 flex flex-col items-center justify-center shadow-soft text-center active:scale-95 transition">
+                        <i class="fas fa-cloud-sun text-3xl text-[#F9B233] mb-2"></i>
+                        <span class="text-sm font-bold">當地天氣</span>
+                        <span class="text-[10px] text-gray-400">澳洲氣象局</span>
+                    </a>
+                    <a href="tel:000" class="bg-white rounded-2xl p-4 flex flex-col items-center justify-center shadow-soft text-center border border-red-50 active:scale-95 transition">
+                        <i class="fas fa-phone-alt text-3xl text-red-500 mb-2"></i>
+                        <span class="text-sm font-bold text-red-600">澳洲緊急電話</span>
+                        <span class="text-[10px] text-gray-400">000 (報警/急救)</span>
+                    </a>
+                </div>
+
+                <div class="bg-white rounded-3xl p-5 shadow-soft mb-6">
+                    <h3 class="font-serif font-bold text-primary mb-3"><i class="fas fa-exclamation-triangle mr-1"></i> 注意事項與禁忌</h3>
+                    <ul class="text-sm text-gray-600 space-y-3 pl-1">
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2 text-xs"></i> <span><strong>海關極嚴：</strong>澳洲禁止攜帶任何新鮮水果、肉類、蛋類入境。若有攜帶藥物，請務必誠實申報。</span></li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2 text-xs"></i> <span><strong>插座規格：</strong>使用 I型轉接頭 (八字型三孔)，電壓為 230V。</span></li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2 text-xs"></i> <span><strong>天氣變化大：</strong>墨爾本有「一天四季」之稱，即使是春天 (10月)，早晚溫差仍大，務必採用洋蔥式穿搭。</span></li>
+                        <li class="flex items-start"><i class="fas fa-check text-green-500 mt-1 mr-2 text-xs"></i> <span><strong>給小費：</strong>澳洲沒有強制的小費文化，但若覺得服務很好，可以留下找零。</span></li>
+                    </ul>
+                </div>
+                
+                <div class="text-center text-xs text-gray-400 pb-4">
+                    Bon Voyage. 祝旅途愉快
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-100 shadow-[0_-10px_20px_rgba(0,0,0,0.03)] z-50 rounded-t-3xl pb-safe">
+            <div class="flex justify-around items-center h-16 px-2">
+                <button onclick="switchTab('plan')" class="nav-btn active flex flex-col items-center w-1/5" id="nav-plan">
+                    <i class="fas fa-route text-lg mb-1"></i><span class="text-[10px]">行程</span>
+                </button>
+                <button onclick="switchTab('guide')" class="nav-btn flex flex-col items-center w-1/5" id="nav-guide">
+                    <i class="fas fa-book-open text-lg mb-1"></i><span class="text-[10px]">導覽</span>
+                </button>
+                <button onclick="switchTab('wallet')" class="nav-btn flex flex-col items-center w-1/5" id="nav-wallet">
+                    <i class="fas fa-wallet text-lg mb-1"></i><span class="text-[10px]">記帳</span>
+                </button>
+                <button onclick="switchTab('lists')" class="nav-btn flex flex-col items-center w-1/5" id="nav-lists">
+                    <i class="fas fa-check-square text-lg mb-1"></i><span class="text-[10px]">清單</span>
+                </button>
+                <button onclick="switchTab('info')" class="nav-btn flex flex-col items-center w-1/5" id="nav-info">
+                    <i class="fas fa-info-circle text-lg mb-1"></i><span class="text-[10px]">資訊</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- JavaScript 邏輯 -->
+    <script>
+        // --- 1. 導覽列切換 ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.getElementById('nav-' + tabId).classList.add('active');
+            
+            // 捲動回頂部
+            document.getElementById('main-content').scrollTo(0, 0);
+        }
+
+        // --- 2. WALLET 記帳系統 ---
+        let expenses = JSON.parse(localStorage.getItem('melb_expenses')) || [];
+        
+        function saveRate() {
+            localStorage.setItem('melb_rate', document.getElementById('exchange-rate').value);
+        }
+        
+        // 載入匯率
+        if(localStorage.getItem('melb_rate')) {
+            document.getElementById('exchange-rate').value = localStorage.getItem('melb_rate');
+        }
+
+        // Canvas 圖片壓縮轉 Base64
+        document.getElementById('exp-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const maxW = 300;
+                    let scale = maxW / img.width;
+                    if (scale > 1) scale = 1;
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    const base64Str = canvas.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('exp-photo-data').value = base64Str;
+                    document.getElementById('photo-preview').src = base64Str;
+                    document.getElementById('photo-preview').classList.remove('hidden');
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        });
+
+        function addExpense() {
+            const nameInput = document.getElementById('exp-name');
+            const amountInput = document.getElementById('exp-amount');
+            const photoInput = document.getElementById('exp-photo-data');
+            
+            let amount = 0;
+            try {
+                // 安全的運算式計算 (過濾掉非數字與運算符號)
+                const sanitizedStr = amountInput.value.replace(/[^-()\d/*+.]/g, '');
+                amount = eval(sanitizedStr) || 0;
+            } catch(e) {
+                alert('金額計算錯誤，請檢查輸入格式');
+                return;
+            }
+
+            if (!nameInput.value || amount <= 0) {
+                alert('請填寫有效的品項與金額');
+                return;
+            }
+
+            const item = {
+                id: Date.now(),
+                name: nameInput.value,
+                aud: parseFloat(amount.toFixed(2)),
+                photo: photoInput.value,
+                date: new Date().toLocaleDateString('zh-TW', {month: 'short', day: 'numeric'})
+            };
+
+            expenses.unshift(item); // 加入到最前面
+            localStorage.setItem('melb_expenses', JSON.stringify(expenses));
+            
+            // 清空表單
+            nameInput.value = '';
+            amountInput.value = '';
+            photoInput.value = '';
+            document.getElementById('photo-preview').classList.add('hidden');
+            document.getElementById('photo-preview').src = '';
+            document.getElementById('exp-file').value = '';
+
+            renderExpenses();
+        }
+
+        function deleteExpense(id) {
+            if(confirm('確定要刪除這筆花費嗎？')) {
+                expenses = expenses.filter(ex => ex.id !== id);
+                localStorage.setItem('melb_expenses', JSON.stringify(expenses));
+                renderExpenses();
+            }
+        }
+
+        function renderExpenses() {
+            const listEl = document.getElementById('expense-list');
+            const rate = parseFloat(document.getElementById('exchange-rate').value) || 5.15;
+            let totalHkd = 0;
+            listEl.innerHTML = '';
+
+            if (expenses.length === 0) {
+                listEl.innerHTML = '<p class="text-center text-gray-400 text-sm mt-6">目前沒有記帳紀錄</p>';
+            }
+
+            expenses.forEach(ex => {
+                const hkd = ex.aud * rate;
+                totalHkd += hkd;
+                
+                let imgHtml = '';
+                if (ex.photo) {
+                    imgHtml = `<img src="${ex.photo}" class="w-12 h-12 rounded-lg object-cover border border-gray-100" onclick="alert('你有一張收據照片！')">`;
+                }
+
+                listEl.innerHTML += `
+                    <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3 relative overflow-hidden">
+                        ${imgHtml}
+                        <div class="flex-1">
+                            <p class="font-bold text-sm text-gray-700">${ex.name}</p>
+                            <p class="text-[10px] text-gray-400">${ex.date}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-gray-700">A$ ${ex.aud}</p>
+                            <p class="text-[10px] text-gray-400">≈ $${hkd.toFixed(1)}</p>
+                        </div>
+                        <button onclick="deleteExpense(${ex.id})" class="ml-2 text-gray-300 hover:text-red-400">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('total-hkd').innerText = '$ ' + totalHkd.toFixed(1);
+        }
+
+        // --- 3. LISTS 清單系統 ---
+        const packingList = [
+            '護照 Passport', '電子旅遊簽證 (ETA 601)', 'SIM卡 / 漫遊 (E-SIM)', 
+            '澳幣現鈔', '尿袋 & 充電線', 'I型轉接頭 (三孔八字形)', 
+            '常備藥物 (感冒/止痾嘔)', '保暖衣物'
+        ];
+        
+        let checks = JSON.parse(localStorage.getItem('melb_checks')) || {};
+
+        function renderChecklist() {
+            const container = document.getElementById('checklist-container');
+            container.innerHTML = '';
+            packingList.forEach((item, index) => {
+                const isChecked = checks[index] ? 'checked' : '';
+                const lineThrough = checks[index] ? 'line-through text-gray-400' : 'text-gray-700';
+                
+                container.innerHTML += `
+                    <label class="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0 cursor-pointer">
+                        <input type="checkbox" onchange="toggleCheck(${index}, this.checked)" ${isChecked} 
+                               class="w-5 h-5 text-primary rounded focus:ring-primary accent-primary">
+                        <span class="text-sm transition-all duration-300 ${lineThrough}">${item}</span>
+                    </label>
+                `;
+            });
+        }
+
+        function toggleCheck(index, state) {
+            checks[index] = state;
+            localStorage.setItem('melb_checks', JSON.stringify(checks));
+            renderChecklist();
+        }
+
+        // --- 4. 備忘錄與自動連結轉換 ---
+        const memoInput = document.getElementById('memo-input');
+        const memoDisplay = document.getElementById('memo-display');
+
+        function linkify(text) {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, function(url) {
+                return `<a href="${url}" target="_blank" class="text-primary underline font-bold break-all"><i class="fas fa-link text-xs"></i> 連結</a>`;
+            });
+        }
+
+        function saveMemo() {
+            const text = memoInput.value;
+            localStorage.setItem('melb_memo', text);
+            memoDisplay.innerHTML = text ? linkify(text) : '<span class="text-gray-400 text-xs">預覽畫面會顯示在這裡...</span>';
+        }
+
+        memoInput.addEventListener('input', saveMemo);
+
+        // --- 初始化執行 ---
+        window.onload = () => {
+            renderExpenses();
+            renderChecklist();
+            
+            // 載入備忘錄
+            const savedMemo = localStorage.getItem('melb_memo');
+            if (savedMemo) {
+                memoInput.value = savedMemo;
+                saveMemo();
+            } else {
+                saveMemo(); // 顯示 placeholder
+            }
+        };
+
+        // 針對 iPhone 底部 Safe Area 的 CSS 補充
+        document.head.insertAdjacentHTML("beforeend", `<style>.pb-safe { padding-bottom: env(safe-area-inset-bottom); }</style>`);
+    </script>
+</body>
+</html>
