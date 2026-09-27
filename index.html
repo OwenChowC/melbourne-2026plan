@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>墨爾本極簡旅程</title>
+    <title>墨爾本十月之旅</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <!-- SortableJS (拖曳排序) -->
+    <!-- SortableJS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/4.2.3/vuedraggable.umd.min.js"></script>
-    <!-- Font Awesome Icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
@@ -20,9 +19,9 @@
                 extend: {
                     colors: {
                         aus: {
-                            light: '#F4F7F6', // 背景底色
-                            green: '#2A5C45', // 墨爾本綠
-                            accent: '#D4A373', // 泥土點綴
+                            light: '#F4F7F6',
+                            green: '#2A5C45',
+                            accent: '#D4A373',
                             dark: '#1B3B2B'
                         }
                     },
@@ -39,26 +38,23 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease; }
         .fade-enter-from, .fade-leave-to { opacity: 0; }
-        /* 避免 iOS 底部導航列被遮擋 */
         .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
     </style>
 </head>
 <body class="text-gray-800 antialiased overflow-x-hidden selection:bg-aus-green selection:text-white">
     <div id="app" class="min-h-screen flex flex-col relative pb-20 pb-safe">
         
-        <!-- 頁首 Banner -->
-        <header class="h-[250px] w-full bg-cover bg-center rounded-b-[40px] relative z-0 shadow-md" 
-                style="background-image: url('Banner.jpg'); background-color: #2A5C45;">
-            <div class="absolute inset-0 bg-black/20 rounded-b-[40px]"></div>
+        <!-- 修正 1: 滿版頁首 Banner，無邊框空隙 -->
+        <header class="w-full h-[250px] relative overflow-hidden rounded-b-[40px] z-0 shadow-md bg-aus-green">
+            <img src="Banner.jpg" alt="Banner" class="w-full h-full object-cover object-center" />
+            <div class="absolute inset-0 bg-black/15"></div>
         </header>
 
-        <!-- 主要內容區 (負邊距上拉，製造圓滑融合感) -->
-        <main class="flex-1 relative z-10 -mt-12 bg-aus-light rounded-t-[40px] px-5 pt-8 min-h-[70vh]">
+        <main class="flex-1 relative z-10 -mt-10 bg-aus-light rounded-t-[40px] px-5 pt-8 min-h-[70vh]">
             
             <!-- Tab 1: 每日行程 -->
             <transition name="fade" mode="out-in">
                 <div v-if="currentTab === 'itinerary'">
-                    <!-- 天氣資訊 -->
                     <div class="bg-white rounded-2xl p-4 shadow-sm mb-6 flex items-center justify-between">
                         <div>
                             <h2 class="text-sm text-gray-500">Melbourne, AU</h2>
@@ -68,7 +64,6 @@
                         <i :class="weather.icon" class="text-4xl text-aus-accent"></i>
                     </div>
 
-                    <!-- 日期橫向滑動 -->
                     <div class="flex overflow-x-auto space-x-3 no-scrollbar pb-2 mb-4">
                         <div v-for="day in days" :key="day.id" @click="currentDay = day.id"
                              :class="['flex-shrink-0 w-16 h-20 rounded-2xl flex flex-col items-center justify-center cursor-pointer transition shadow-sm', 
@@ -78,21 +73,17 @@
                         </div>
                     </div>
 
-                    <!-- 行程列表 (可拖曳) -->
                     <div ref="itineraryList" class="space-y-4">
                         <div v-for="(item, index) in currentItinerary" :key="item.id" class="relative group">
                             
-                            <!-- 交通時間 (如果不是第一個行程) -->
                             <div v-if="index > 0 || item.type !== 'flight'" class="flex items-center text-xs text-gray-400 my-2 ml-4">
                                 <div class="w-1 h-8 border-l-2 border-dashed border-gray-300 mr-3"></div>
                                 <i :class="getTransportIcon(item.transportType)" class="mr-2 text-aus-green"></i>
                                 <span>{{ item.transportTime }} 分鐘</span>
                             </div>
 
-                            <!-- 行程卡片 -->
                             <div class="bg-white rounded-2xl p-4 shadow-sm flex flex-col gap-2 relative overflow-hidden" 
                                  :class="{'border-l-4 border-aus-accent bg-amber-50/30': item.type === 'flight'}">
-                                
                                 <div class="flex justify-between items-start">
                                     <div class="flex-1 cursor-pointer" @click="openMaps(item.name)">
                                         <div class="flex items-center gap-2">
@@ -103,49 +94,34 @@
                                     </div>
                                     <button @click="editItem(item)" class="text-gray-300 hover:text-aus-green p-2"><i class="fa-solid fa-pen"></i></button>
                                 </div>
-                                
                                 <div v-if="item.notes" class="text-sm text-gray-500 mt-1"><i class="fa-solid fa-circle-info mr-1"></i> {{ item.notes }}</div>
-                                <div class="flex gap-4 mt-2">
-                                    <span v-if="item.ticket" class="text-xs text-aus-accent font-medium"><i class="fa-solid fa-ticket mr-1"></i> {{ item.ticket }}</span>
-                                    <span v-if="item.hours" class="text-xs text-gray-400"><i class="fa-regular fa-clock mr-1"></i> {{ item.hours }}</span>
-                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 新增按鈕 FAB -->
                     <button @click="openAddModal" class="fixed bottom-24 right-5 w-14 h-14 bg-aus-green text-white rounded-full shadow-lg flex items-center justify-center text-2xl hover:scale-105 transition z-50">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
             </transition>
 
-            <!-- Tab 2: 導覽 -->
+            <!-- Tab 2: 導覽 (完整收錄行程所有景點 + 高清穩定圖源) -->
             <transition name="fade" mode="out-in">
-                <div v-if="currentTab === 'guide'" class="space-y-8">
-                    <h2 class="text-2xl font-bold text-aus-dark mb-4">深度探索</h2>
+                <div v-if="currentTab === 'guide'" class="space-y-6 pb-24">
+                    <h2 class="text-2xl font-bold text-aus-dark mb-4">行程景點全導覽</h2>
                     
-                    <article class="bg-white rounded-2xl overflow-hidden shadow-sm">
-                        <img src="https://images.unsplash.com/photo-1545044846-c560bb9fdb01?auto=format&fit=crop&q=80&w=800" class="w-full h-48 object-cover" alt="Great Ocean Road">
-                        <div class="p-5">
-                            <h3 class="text-xl font-bold mb-2">大洋路 (Great Ocean Road)</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed mb-4 text-justify">
-                                為了紀念在第一次世界大戰中犧牲的士兵而建，是世界上最大型的戰爭紀念碑。十二門徒石因海浪侵蝕而形成，雖然名為十二，但目前僅存約七八座石柱。
-                            </p>
-                        </div>
-                    </article>
-
-                    <article class="bg-white rounded-2xl overflow-hidden shadow-sm">
-                        <div class="p-5">
-                            <h3 class="text-xl font-bold mb-2">月亮公園 (Luna Park)</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed mb-4 text-justify">
-                                位於 St Kilda，自 1912 年開業，其標誌性的「大嘴」入口是墨爾本經典地標。園內的 Scenic Railway 是世界上持續營運最古老的木製過山車。
-                            </p>
-                            <div class="w-full h-48 rounded-xl overflow-hidden border">
-                                <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.openstreetmap.org/export/embed.html?bbox=144.9734%2C-37.8687%2C144.9774%2C-37.8647&amp;layer=mapnik&amp;marker=-37.8667%2C144.9754"></iframe>
+                    <div class="space-y-6">
+                        <article v-for="spot in guideSpots" :key="spot.title" class="bg-white rounded-2xl overflow-hidden shadow-sm">
+                            <img :src="spot.img" class="w-full h-48 object-cover" :alt="spot.title">
+                            <div class="p-5">
+                                <h3 class="text-xl font-bold mb-2 text-aus-dark">{{ spot.title }}</h3>
+                                <p class="text-gray-600 text-sm leading-relaxed text-justify mb-3">{{ spot.desc }}</p>
+                                <div v-if="spot.mapEmbed" class="w-full h-44 rounded-xl overflow-hidden border mt-2">
+                                    <iframe width="100%" height="100%" frameborder="0" scrolling="no" :src="spot.mapEmbed"></iframe>
+                                </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    </div>
                 </div>
             </transition>
 
@@ -156,12 +132,11 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div v-for="item in shoppingList" :key="item.id" class="bg-white rounded-2xl p-3 shadow-sm flex flex-col items-center relative">
                             <button @click="deleteShopping(item.id)" class="absolute top-2 right-2 text-red-400"><i class="fa-solid fa-circle-xmark"></i></button>
-                            <img :src="item.img || 'https://via.placeholder.com/150?text=No+Image'" class="w-24 h-24 object-cover rounded-xl mb-2">
+                            <img :src="item.img || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=300'" class="w-full h-28 object-cover rounded-xl mb-2">
                             <h4 class="text-sm font-bold text-center w-full truncate">{{ item.name }}</h4>
                         </div>
                     </div>
-                    <!-- 新增 FAB -->
-                    <button @click="showShoppingModal = true" class="fixed bottom-24 right-5 w-14 h-14 bg-aus-green text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-50">
+                    <button @click="openShoppingModal" class="fixed bottom-24 right-5 w-14 h-14 bg-aus-green text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-50">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
@@ -177,36 +152,51 @@
                     </div>
 
                     <div class="space-y-3">
-                        <div v-for="exp in expenses" :key="exp.id" class="bg-white rounded-xl p-4 shadow-sm flex items-center justify-between">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-aus-light flex items-center justify-center text-aus-green">
-                                    <i :class="getExpenseIcon(exp.category)"></i>
+                        <div v-for="exp in expenses" :key="exp.id" class="bg-white rounded-xl p-4 shadow-sm flex flex-col">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-aus-light flex items-center justify-center text-aus-green shrink-0">
+                                        <i :class="getExpenseIcon(exp.category)"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">{{ exp.name }}</h4>
+                                        <p class="text-xs text-gray-400">{{ exp.date }} • {{ exp.payment }}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-800">{{ exp.name }}</h4>
-                                    <p class="text-xs text-gray-400">{{ exp.date }} • {{ exp.payment }}</p>
+                                <div class="text-right">
+                                    <p class="font-bold text-aus-accent">${{ exp.amount }}</p>
+                                    <button @click="deleteExpense(exp.id)" class="text-xs text-red-400 mt-1">刪除</button>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <p class="font-bold text-aus-accent">${{ exp.amount }}</p>
-                                <button @click="deleteExpense(exp.id)" class="text-xs text-red-400 mt-1">刪除</button>
-                            </div>
+                            <img v-if="exp.img" :src="exp.img" class="w-full h-24 object-cover rounded-lg mt-3">
                         </div>
                     </div>
-                    <!-- 新增 FAB -->
-                    <button @click="showExpenseModal = true" class="fixed bottom-24 right-5 w-14 h-14 bg-aus-green text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-50">
+                    <button @click="openExpenseModal" class="fixed bottom-24 right-5 w-14 h-14 bg-aus-green text-white rounded-full shadow-lg flex items-center justify-center text-2xl z-50">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
             </transition>
 
-            <!-- Tab 5: 資訊 -->
+            <!-- Tab 5: 資訊 (即時自動連線抓最新匯率) -->
             <transition name="fade" mode="out-in">
                 <div v-if="currentTab === 'info'" class="space-y-6 pb-24">
                     
-                    <!-- 匯率換算 -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-red-500">
+                        <h3 class="font-bold text-aus-dark mb-3"><i class="fa-solid fa-triangle-exclamation mr-2 text-red-500"></i>澳洲入境注意 & 禁忌</h3>
+                        <ul class="list-disc pl-4 text-sm text-gray-600 space-y-2">
+                            <li><strong class="text-red-500">嚴禁攜帶：</strong>新鮮水果、蔬菜、肉類及乳製品。</li>
+                            <li><strong class="text-aus-green">必須申報：</strong>所有食品、植物、木製品及動物產品。不確定走「申報通道」。</li>
+                            <li>現金攜帶超過 10,000 澳幣（或等值外幣）必須申報。</li>
+                            <li>含麻黃鹼感冒藥屬管制品，需攜帶原包裝或處方箋。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 修正 2: 最新動態匯率 -->
                     <div class="bg-white rounded-2xl p-5 shadow-sm">
-                        <h3 class="font-bold text-aus-dark mb-4"><i class="fa-solid fa-money-bill-transfer mr-2"></i>匯率換算 (AUD ➔ TWD)</h3>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-aus-dark"><i class="fa-solid fa-money-bill-transfer mr-2"></i>最新匯率換算 (AUD ➔ HKD)</h3>
+                            <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full" v-if="isRateLive">即時連線</span>
+                        </div>
                         <div class="flex items-center gap-3">
                             <div class="flex-1 bg-gray-50 rounded-xl p-2 border">
                                 <span class="text-xs text-gray-400 block mb-1">澳幣 (AUD)</span>
@@ -214,14 +204,13 @@
                             </div>
                             <i class="fa-solid fa-arrow-right text-gray-300"></i>
                             <div class="flex-1 bg-aus-light rounded-xl p-2 border border-aus-green/30">
-                                <span class="text-xs text-aus-green block mb-1">台幣 (TWD)</span>
-                                <div class="font-bold text-lg text-aus-dark">{{ (calcAud * exchangeRate).toFixed(0) }}</div>
+                                <span class="text-xs text-aus-green block mb-1">港幣 (HKD)</span>
+                                <div class="font-bold text-lg text-aus-dark">{{ (calcAud * exchangeRate).toFixed(2) }}</div>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-400 mt-2 text-right">參考匯率: 1 AUD ≈ {{ exchangeRate }} TWD</p>
+                        <p class="text-xs text-gray-400 mt-2 text-right">當前匯率: 1 AUD ≈ {{ exchangeRate }} HKD</p>
                     </div>
 
-                    <!-- 行前清單 -->
                     <div class="bg-white rounded-2xl p-5 shadow-sm">
                         <h3 class="font-bold text-aus-dark mb-3"><i class="fa-solid fa-list-check mr-2"></i>必備清單</h3>
                         <div class="grid grid-cols-2 gap-2">
@@ -232,7 +221,6 @@
                         </div>
                     </div>
 
-                    <!-- 航班與住宿 -->
                     <div class="grid grid-cols-1 gap-4">
                         <div class="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-blue-400">
                             <h3 class="font-bold text-aus-dark mb-2"><i class="fa-solid fa-plane mr-2 text-blue-400"></i>去程航班 QF030</h3>
@@ -245,12 +233,11 @@
                         <div class="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-aus-green">
                             <h3 class="font-bold text-aus-dark mb-2"><i class="fa-solid fa-bed mr-2 text-aus-green"></i>住宿資訊</h3>
                             <p class="text-sm font-bold text-gray-800">Melbourne Private Apartments - Collins Wharf</p>
-                            <p class="text-xs text-gray-500 mt-1 mb-2">915 Collins Street, Docklands</p>
+                            <p class="text-xs text-gray-500 mt-1 mb-2">915 Collins Street, Docklands, 3008 Melbourne</p>
                             <a href="https://maps.google.com/?q=915+Collins+Street,+Docklands,+Melbourne" target="_blank" class="text-xs text-blue-500 underline"><i class="fa-solid fa-location-arrow mr-1"></i>導航</a>
                         </div>
                     </div>
 
-                    <!-- 緊急與天氣 -->
                     <div class="flex gap-4">
                         <a href="tel:000" class="flex-1 bg-red-50 text-red-600 rounded-2xl p-4 text-center shadow-sm">
                             <i class="fa-solid fa-truck-medical text-2xl mb-1"></i>
@@ -263,10 +250,8 @@
                     </div>
                 </div>
             </transition>
-
         </main>
 
-        <!-- 底部導航列 -->
         <nav class="fixed bottom-0 w-full bg-white shadow-app rounded-t-3xl pb-safe z-40 border-t border-gray-100">
             <div class="flex justify-around items-center h-20 px-2">
                 <button v-for="tab in tabs" :key="tab.id" @click="currentTab = tab.id" 
@@ -278,10 +263,9 @@
             </div>
         </nav>
 
-        <!-- 表單彈出視窗 (整合版：行程/購物/花費 共用邏輯簡化) -->
-        <!-- 這裡僅示範新增/編輯行程 Modal -->
+        <!-- Modals -->
         <div v-if="showEditModal" class="fixed inset-0 bg-black/50 z-50 flex justify-center items-end sm:items-center p-0 sm:p-4">
-            <div class="bg-white w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 pb-safe animate-[slideUp_0.3s_ease-out]">
+            <div class="bg-white w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 pb-safe">
                 <h3 class="text-xl font-bold mb-4">{{ isEditing ? '編輯行程' : '新增行程' }}</h3>
                 <div class="space-y-3">
                     <select v-model="editForm.category" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm">
@@ -290,14 +274,58 @@
                     </select>
                     <input type="text" v-model="editForm.name" placeholder="行程名稱" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm">
                     <input type="time" v-model="editForm.time" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm">
-                    <input type="text" v-model="editForm.hours" placeholder="營業時間" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm">
-                    <input type="text" v-model="editForm.ticket" placeholder="門票資訊" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm">
                     <textarea v-model="editForm.notes" placeholder="備註/特色" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm"></textarea>
                 </div>
                 <div class="flex gap-3 mt-6">
                     <button v-if="isEditing" @click="confirmDelete" class="w-1/3 py-3 bg-red-100 text-red-600 rounded-xl font-bold">刪除</button>
                     <button @click="showEditModal = false" class="flex-1 py-3 bg-gray-200 text-gray-700 rounded-xl font-bold">取消</button>
                     <button @click="saveItinerary" class="flex-1 py-3 bg-aus-green text-white rounded-xl font-bold">儲存</button>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="showShoppingModal" class="fixed inset-0 bg-black/50 z-50 flex justify-center items-end sm:items-center p-0 sm:p-4">
+            <div class="bg-white w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 pb-safe">
+                <h3 class="text-xl font-bold mb-4">新增購物清單</h3>
+                <div class="space-y-3">
+                    <input type="text" v-model="shoppingForm.name" placeholder="商品名稱" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm">
+                    <label class="block w-full bg-gray-50 border border-gray-200 border-dashed rounded-xl p-4 text-center cursor-pointer text-gray-500 text-sm hover:bg-gray-100">
+                        <i class="fa-solid fa-camera mb-2 text-xl block"></i> 上傳圖片
+                        <input type="file" accept="image/*" class="hidden" @change="handleImageUpload($event, 'shopping')">
+                    </label>
+                    <img v-if="shoppingForm.img" :src="shoppingForm.img" class="h-32 object-cover rounded-xl mx-auto">
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button @click="showShoppingModal = false" class="flex-1 py-3 bg-gray-200 text-gray-700 rounded-xl font-bold">取消</button>
+                    <button @click="saveShopping" class="flex-1 py-3 bg-aus-green text-white rounded-xl font-bold">儲存</button>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="showExpenseModal" class="fixed inset-0 bg-black/50 z-50 flex justify-center items-end sm:items-center p-0 sm:p-4">
+            <div class="bg-white w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl p-6 pb-safe">
+                <h3 class="text-xl font-bold mb-4">新增花費</h3>
+                <div class="space-y-3">
+                    <select v-model="expenseForm.category" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm">
+                        <option value="transit">交通</option><option value="food">飲食</option>
+                        <option value="acc">住宿</option><option value="ticket">門票</option>
+                        <option value="shopping">購物</option><option value="other">其他</option>
+                    </select>
+                    <input type="text" v-model="expenseForm.name" placeholder="項目名稱" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm">
+                    <input type="date" v-model="expenseForm.date" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm">
+                    <input type="number" v-model="expenseForm.amount" placeholder="金額 (AUD)" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm">
+                    <select v-model="expenseForm.payment" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm">
+                        <option value="Cash">現金 (Cash)</option><option value="Credit Card">信用卡</option>
+                    </select>
+                    <label class="block w-full bg-gray-50 border border-gray-200 border-dashed rounded-xl p-4 text-center cursor-pointer text-gray-500 text-sm hover:bg-gray-100">
+                        <i class="fa-solid fa-camera mb-2 text-xl block"></i> 拍攝收據
+                        <input type="file" accept="image/*" class="hidden" @change="handleImageUpload($event, 'expense')">
+                    </label>
+                    <img v-if="expenseForm.img" :src="expenseForm.img" class="h-32 object-cover rounded-xl mx-auto">
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button @click="showExpenseModal = false" class="flex-1 py-3 bg-gray-200 text-gray-700 rounded-xl font-bold">取消</button>
+                    <button @click="saveExpense" class="flex-1 py-3 bg-aus-green text-white rounded-xl font-bold">儲存</button>
                 </div>
             </div>
         </div>
@@ -324,41 +352,106 @@
                     { id: 'D5', date: '22', weekday: 'Tue' }, { id: 'D6', date: '23', weekday: 'Wed' },
                     { id: 'D7', date: '24', weekday: 'Thu' }, { id: 'D8', date: '25', weekday: 'Fri' }, { id: 'D9', date: '26', weekday: 'Sat' }
                 ]);
-                const currentDay = ref('D2');
+                const currentDay = ref('D1');
 
-                // 初始行程資料
                 const itineraryData = ref({
-                    'D1': [{ id: 1, type: 'flight', category: 'flight', time: '20:05', name: 'QF030 飛往墨爾本', notes: '香港國際機場出發', transportType: 'walk', transportTime: 0 }],
+                    'D1': [{ id: 1, type: 'flight', category: 'flight', time: '20:05', name: 'QF030 飛往墨爾本', notes: '香港國際機場搭乘 QF030 班機', transportType: 'walk', transportTime: 0 }],
                     'D2': [
-                        { id: 2, category: 'acc', time: '08:20', name: '抵達機場 & 寄放行李', notes: '搭乘SkyBus至Docklands公寓', transportType: 'bus', transportTime: 45 },
-                        { id: 3, category: 'attraction', time: '10:00', name: '維多利亞女王市場', hours: '06:00-15:00', notes: '搭乘免費電車前往', transportType: 'train', transportTime: 15 },
-                        { id: 4, category: 'attraction', time: '12:15', name: '德格雷夫斯街 Degraves St', notes: '咖啡巷弄', transportType: 'walk', transportTime: 10 },
-                        { id: 5, category: 'shopping', time: '14:00', name: '皇家拱廊 Royal Arcade', notes: '漫步購物', transportType: 'walk', transportTime: 5 },
-                        { id: 6, category: 'attraction', time: '17:30', name: 'Eureka Skydeck 觀景台', ticket: '約 $28 AUD', notes: '俯瞰墨爾本夜景', transportType: 'walk', transportTime: 15 },
+                        { id: 2, category: 'acc', time: '08:20', name: '抵達墨爾本機場 ➔ 前往 Docklands 寄行李', notes: '搭乘 SkyBus 前往海濱私人公寓', transportType: 'bus', transportTime: 45 },
+                        { id: 3, category: 'attraction', time: '10:00', name: '維多利亞女王市場 (Queen Victoria Market)', notes: '搭乘免費電車前往百年傳統市場', transportType: 'train', transportTime: 15 },
+                        { id: 4, category: 'food', time: '12:15', name: '德格雷夫斯街 (Degraves Street)', notes: '墨爾本最具代表性的咖啡巷弄', transportType: 'walk', transportTime: 15 },
+                        { id: 5, category: 'shopping', time: '14:00', name: '皇家拱廊 (Royal Arcade)', notes: '漫步華麗維多利亞風格拱廊', transportType: 'walk', transportTime: 5 },
+                        { id: 6, category: 'attraction', time: '17:30', name: '尤利卡觀景台 (Melbourne Skydeck)', notes: '俯瞰墨爾本絕美璀璨夜景', transportType: 'walk', transportTime: 15 }
                     ],
-                    // 為了範例長度，D3~D9 已精簡，實際可自行擴充
-                    'D3': [{ id: 7, category: 'attraction', time: '10:00', name: 'Ballarat 疏芬山金礦', notes: '市區取車自駕前往，淘金體驗', transportType: 'car', transportTime: 90 }],
-                    'D4': [{ id: 8, category: 'attraction', time: '08:00', name: '大洋路 Great Ocean Road', notes: '十二門徒石、阿波羅灣', transportType: 'car', transportTime: 120 }]
+                    'D3': [
+                        { id: 7, category: 'other', time: '09:30', name: '市區辦理租車手續並取車', notes: '準備自駕之旅', transportType: 'walk', transportTime: 10 },
+                        { id: 8, category: 'attraction', time: '10:00', name: '前往 Ballarat 疏芬山金礦', notes: '自駕向西北方行駛', transportType: 'car', transportTime: 90 },
+                        { id: 9, category: 'attraction', time: '11:30', name: '疏芬山金礦場 (Sovereign Hill)', notes: '巡邏表演、溪邊淘真金、參觀地底礦坑', transportType: 'walk', transportTime: 0 },
+                        { id: 10, category: 'acc', time: '16:00', name: '返回 Docklands 公寓', notes: '結束淘金體驗返程', transportType: 'car', transportTime: 90 }
+                    ],
+                    'D4': [
+                        { id: 11, category: 'other', time: '08:00', name: '出發前往大洋路 (Great Ocean Road)', notes: '展開海岸線絕景自駕', transportType: 'car', transportTime: 0 },
+                        { id: 12, category: 'attraction', time: '09:30', name: '大洋路歷史木牌樓', notes: '合照紀念偉大築路工程', transportType: 'car', transportTime: 90 },
+                        { id: 13, category: 'attraction', time: '10:00', name: '洛恩小鎮 (Lorne)', notes: '俯瞰公路與海洋絕美弧線', transportType: 'car', transportTime: 30 },
+                        { id: 14, category: 'food', time: '12:30', name: '阿波羅灣 (Apollo Bay)', notes: '海濱小鎮享用海鮮午餐', transportType: 'car', transportTime: 60 },
+                        { id: 15, category: 'attraction', time: '14:00', name: '大奧特威國家公園', notes: '尋找野生 Koala (樹熊)', transportType: 'car', transportTime: 40 },
+                        { id: 16, category: 'attraction', time: '15:30', name: '十二門徒石 / 吉布森石階 / 洛克阿德峽灣', notes: '朝聖巨石與峽灣震撼奇景', transportType: 'car', transportTime: 60 },
+                        { id: 17, category: 'acc', time: '18:30', name: '返回 Docklands 宿處', notes: '夜間自駕回市區', transportType: 'car', transportTime: 180 }
+                    ],
+                    'D5': [
+                        { id: 18, category: 'attraction', time: '10:00', name: '前往 Brighton 海灘', notes: '', transportType: 'train', transportTime: 30 },
+                        { id: 19, category: 'attraction', time: '11:00', name: '彩虹小屋 (Bathing Boxes)', notes: '與海邊獨特更衣小屋合照', transportType: 'walk', transportTime: 10 },
+                        { id: 20, category: 'attraction', time: '12:30', name: '前往維多利亞州立圖書館', notes: '搭乘免費電車回到市區', transportType: 'train', transportTime: 40 },
+                        { id: 21, category: 'attraction', time: '15:00', name: '圖書館穹頂閱覽室 & Hosier 塗鴉巷', notes: '朝聖八角穹頂與街頭塗鴉大片', transportType: 'walk', transportTime: 10 }
+                    ],
+                    'D6': [
+                        { id: 22, category: 'other', time: '10:30', name: '前往 Lakeside 車站', notes: '準備搭乘蒸汽火車', transportType: 'car', transportTime: 60 },
+                        { id: 23, category: 'attraction', time: '12:35', name: '普芬比利火車 (Lakeside ➔ Gembrook)', notes: '復古百年蒸汽火車體驗', transportType: 'train', transportTime: 40 },
+                        { id: 24, category: 'attraction', time: '13:15', name: '漫步 Gembrook 小鎮', notes: '悠閒享用午餐與逛街', transportType: 'walk', transportTime: 0 },
+                        { id: 25, category: 'attraction', time: '15:05', name: '搭乘火車 (Gembrook ➔ Lakeside)', notes: '返回 Lakeside 車站取車', transportType: 'train', transportTime: 40 },
+                        { id: 26, category: 'other', time: '16:00', name: '前往菲利普島 (Phillip Island)', notes: '', transportType: 'car', transportTime: 90 },
+                        { id: 27, category: 'attraction', time: '18:00', name: '海濱棧道尋找野生海豹', notes: '漫步 The Nobbies 木棧道', transportType: 'walk', transportTime: 15 },
+                        { id: 28, category: 'attraction', time: '19:00', name: '神仙企鵝歸巢 (Underground Viewing)', notes: '地底觀察窗近距離看企鵝返巢', transportType: 'car', transportTime: 15 },
+                        { id: 29, category: 'acc', time: '21:30', name: '返回 Docklands 公寓', notes: '', transportType: 'car', transportTime: 120 }
+                    ],
+                    'D7': [
+                        { id: 30, category: 'attraction', time: '10:00', name: 'St Kilda 月亮公園 (Luna Park)', notes: '標誌性大嘴入口合照', transportType: 'train', transportTime: 30 },
+                        { id: 31, category: 'shopping', time: '12:00', name: 'DFO South Wharf Outlet', notes: '品牌大折扣狂歡血拼', transportType: 'train', transportTime: 20 },
+                        { id: 32, category: 'food', time: '20:30', name: '與朋友聚餐', notes: '', transportType: 'walk', transportTime: 15 }
+                    ],
+                    'D8': [
+                        { id: 33, category: 'other', time: '10:00', name: '前往 Chadstone Shopping Centre', notes: '搭乘接駁車或大眾運輸', transportType: 'train', transportTime: 40 },
+                        { id: 34, category: 'shopping', time: '10:30', name: '查斯頓購物中心血拼', notes: '南半球最大精品與時尚購物天堂', transportType: 'walk', transportTime: 0 }
+                    ],
+                    'D9': [
+                        { id: 35, type: 'flight', category: 'flight', time: '11:05', name: 'QF029 返回香港', notes: '抵達時間 17:35 (MEL ➔ HKG)', transportType: 'bus', transportTime: 45 }
+                    ]
                 });
 
-                const currentItinerary = computed(() => {
-                    return itineraryData.value[currentDay.value] || [];
-                });
-
-                // 天氣與匯率 Mock Data (前端無API Key實作)
-                const weather = ref({ temp: 18, feelsLike: 16, icon: 'fa-solid fa-cloud-sun' });
-                const exchangeRate = ref(21.2);
-                const calcAud = ref(100);
-
-                // 購物與花費 (LocalStorage 初始化)
-                const shoppingList = ref(JSON.parse(localStorage.getItem('melb_shopping')) || []);
-                const expenses = ref(JSON.parse(localStorage.getItem('melb_expenses')) || [
-                    { id: 1, category: 'food', name: 'Flat White', date: '2026-10-19', amount: 5.5, payment: 'Cash' }
+                // 修正 3: 完整收錄所有行程景點的深度導覽資料庫
+                const guideSpots = ref([
+                    { title: '維多利亞女王市場 (Queen Victoria Market)', img: 'https://www.visitvictoria.com/-/media/atdw/melbourne/see-and-do/shopping-and-fashion/markets/c8d844df766465a5402fde01ce87770a_1600x1200.jpeg?ts=20220901330431', desc: '南半球最大的露天市場，自1878年營運至今。這裡有新鮮海鮮、熱甜甜圈餐車、熱帶水果以及各類澳洲在地紀念品，是體現墨爾本庶民生活的核心景點。' },
+                    { title: '德格雷夫斯街 (Degraves Street)', img: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Degraves_Street%2C_Melbourne%2C_February_2022.jpg/1280px-Degraves_Street%2C_Melbourne%2C_February_2022.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail', desc: '墨爾本獨一無二的「巷弄咖啡文化」代表。窄小的巷道兩旁密佈著露天咖啡座，空氣中瀰漫著濃郁的 Flat White 咖啡香。' },
+                    { title: '皇家拱廊 (Royal Arcade)', img: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Block_Arcade_Melbourne.jpg/1280px-Block_Arcade_Melbourne.jpg?utm_source=zh.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail', desc: '墨爾本最古老的現存購物拱廊（1870年開業），充滿奢華的維多利亞式建築風采，盡頭立有哥德與瑪哥德（Gog & Magog）神話巨人的時鐘。' },
+                    { title: '尤利卡觀景台 (Melbourne Skydeck)', img: 'https://www.visitvictoria.com/-/media/atdw/melbourne/see-and-do/art-and-culture/architecture-and-design/feef6bdfefef02de45e00bca9dfc102a_1600x1200.jpeg?ts=20231005320659', desc: '位於88樓，是南半球最高的觀景台。在此可以360度俯瞰墨爾本市區、亞拉河以及菲利普港灣的璀璨夜景。' },
+                    { title: '疏芬山金礦場 (Sovereign Hill)', img: 'https://www.visitvictoria.com/-/media/atdw/goldfields/see-and-do/art-and-culture/history-and-heritage/6673f7536ef639b0611ed34a3cfd99c5_1600x1200.jpeg?ts=20260804330156', desc: '位於 Ballarat 的戶外博物館，完整重現了 1850 年代澳洲淘金熱潮。職員身著復古服飾，你可以親自在河邊體驗淘選真金！' },
+                    { title: '大洋路木牌樓 (Memorial Arch)', img: 'https://pimg.1px.tw/traveler80s/1758379322-2586830622-g.jpg', desc: '大洋路的起點地標，紀念第一次世界大戰歸國士兵手工開鑿這條全長 243 公里壯麗海岸公路的傳奇歷史。' },
+                    { title: '洛恩與阿波羅灣 (Lorne & Apollo Bay)', img: 'https://www.greatoceanroadaustralia.org/wp-content/uploads/2022/04/Open-Road-Australia-1920x1080.jpg', desc: '大洋路上最浪漫的兩個海濱小鎮，蜿蜒海岸線與湛藍海洋相接，是享用澳洲炸魚薯條與海鮮咖啡廳的最佳停駐點。' },
+                    { title: '十二門徒石 & 洛克阿德峽灣', img: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/The_Twelve_Apostles_2011.jpg/1280px-The_Twelve_Apostles_2011.jpg?utm_source=zh.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail', desc: '大自然耗費數百萬年雕刻的南洋史詩奇景。石灰岩巨柱屹立於蔚藍大海中，旁邊的洛克阿德峽灣更是充滿沉船歷史傳奇。' },
+                    { title: 'Brighton 彩虹小屋 (Bathing Boxes)', img: 'https://images.trvl-media.com/place/6061007/9b3f0769-df5b-4560-a460-b5b8747a5dce.jpg', desc: '82座一字排開的繽紛海灘小屋，建於19世紀末，沒有水電卻保留了獨特的彩繪個性，是墨爾本最極致的IG打卡秘境。' },
+                    { title: '維多利亞州立圖書館 (State Library of Victoria)', img: 'https://images.unsplash.com/photo-1514395462725-fb4566210144?auto=format&fit=crop&q=80&w=800', desc: '澳洲最古老的公共圖書館，擁有舉世著名的 La Trobe 八角形巨型穹頂閱覽室，充滿濃厚的古典學術藝術氣息。' },
+                    { title: '塗鴉巷 (Hosier Lane)', img: 'https://www.visitvictoria.com/-/media/images/melbourne/destinations/laneways/hosier-lane/hosier-lane_mel_r_152543-56_1600x900.jpg?ts=20240429461126&c=product&cw=1600&ch=1200', desc: '墨爾本街頭藝術的靈魂所在，全巷塗鴉創作定期更換，每一道牆面都充滿強烈的視覺張力與當代潮流個性。' },
+                    { title: '普芬比利蒸汽火車 (Puffing Billy)', img: 'https://bubugoaround.com/wp-content/uploads/puffing-billy-212.jpg', desc: '澳洲最古老且保存最完美的百年蒸汽火車，駛過綠意盎然的丹頓農山脈木橋，雙腳掛在車廂外的體驗是無數旅客的最愛。', mapEmbed: 'https://www.openstreetmap.org/export/embed.html?bbox=145.35%2C-37.92%2C145.55%2C-37.85&layer=mapnik' },
+                    { title: '神仙企鵝歸巢 (Penguin Parade)', img: 'https://images.trvl-media.com/localexpert/190815/ab1770fb-3768-4ccf-83aa-126a51b94ff7.jpg?impolicy=resizecrop&rw=1005&rh=565', desc: '菲利普島的奇蹟！每當夕陽西下，成千上萬隻世界上體型最小的神仙小企鵝會成群結隊穿過沙灘搖搖晃晃返回巢穴。' },
+                    { title: '月亮公園 (Luna Park St Kilda)', img: 'https://images.trvl-media.com/place/6060975/6c5d37c3-65c3-459d-bb0e-fcd81a433e0c.jpg', desc: '開園於1912年，標誌性的「巨型笑臉入口」迎接著一代又一代遊客，園內擁有全球現存最古老、需人工煞車營運的木製過山車。', mapEmbed: 'https://www.openstreetmap.org/export/embed.html?bbox=144.9734%2C-37.8687%2C144.9774%2C-37.8647&layer=mapnik' },
+                    { title: '查斯頓購物中心 (Chadstone Shopping Centre)', img: 'https://www.visitvictoria.com/-/media/atdw/melbourne/see-and-do/shopping-and-fashion/c41bc003d562c4ab4925cc6e09dd9c30_1600x1200.jpeg?ts=20220601330508', desc: '號稱「南半球最大的時尚首都」，匯聚了超過 550 家國際頂級奢華品牌、時尚小店與絕佳美食街。' }
                 ]);
 
+                const currentItinerary = computed(() => itineraryData.value[currentDay.value] || []);
+
+                const weather = ref({ temp: 18, feelsLike: 16, icon: 'fa-solid fa-cloud-sun' });
+                const exchangeRate = ref(5.2);
+                const isRateLive = ref(false);
+                const calcAud = ref(100);
+
+                // 修正 2: 連線取得最新 AUD ➔ HKD 匯率 API
+                const fetchExchangeRate = async () => {
+                    try {
+                        const res = await fetch('https://open.er-api.com/v6/latest/AUD');
+                        const data = await res.json();
+                        if (data && data.rates && data.rates.HKD) {
+                            exchangeRate.value = parseFloat(data.rates.HKD.toFixed(2));
+                            isRateLive.value = true;
+                        }
+                    } catch (e) {
+                        console.log('使用預設備援匯率');
+                    }
+                };
+
+                const shoppingList = ref(JSON.parse(localStorage.getItem('melb_shopping')) || []);
+                const expenses = ref(JSON.parse(localStorage.getItem('melb_expenses')) || []);
                 const totalExpenses = computed(() => expenses.value.reduce((sum, e) => sum + parseFloat(e.amount), 0));
 
-                // 檢查清單
                 const checklist = ref(JSON.parse(localStorage.getItem('melb_checklist')) || [
                     { name: '護照 Passport', done: false }, { name: '電子簽證 ETA', done: false },
                     { name: 'E-SIM / 漫遊', done: false }, { name: '澳幣現金', done: false },
@@ -366,12 +459,10 @@
                     { name: '常備藥品', done: false }, { name: '保暖衣物', done: false }
                 ]);
 
-                // 監聽並存入 LocalStorage
                 Vue.watch(checklist, (val) => localStorage.setItem('melb_checklist', JSON.stringify(val)), { deep: true });
                 Vue.watch(shoppingList, (val) => localStorage.setItem('melb_shopping', JSON.stringify(val)), { deep: true });
                 Vue.watch(expenses, (val) => localStorage.setItem('melb_expenses', JSON.stringify(val)), { deep: true });
 
-                // UI Methods
                 const getCategoryName = (cat) => {
                     const map = { attraction: '景點', food: '美食', shopping: '購物', acc: '住宿', flight: '航班', other: '其他' };
                     return map[cat] || '行程';
@@ -384,11 +475,8 @@
                     const map = { food: 'fa-utensils', transit: 'fa-train', acc: 'fa-bed', shopping: 'fa-bag-shopping', ticket: 'fa-ticket' };
                     return map[cat] || 'fa-receipt';
                 };
-                const openMaps = (dest) => {
-                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dest + ' Melbourne')}`, '_blank');
-                };
+                const openMaps = (dest) => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(dest + ' Melbourne')}`, '_blank');
 
-                // 拖曳排序實作 (SortableJS)
                 const itineraryList = ref(null);
                 Vue.watch(currentDay, () => {
                     nextTick(() => {
@@ -405,7 +493,6 @@
                     });
                 }, { immediate: true });
 
-                // 編輯表單邏輯
                 const showEditModal = ref(false);
                 const isEditing = ref(false);
                 const editForm = ref({});
@@ -416,28 +503,22 @@
                     editForm.value = { category: 'attraction', time: '10:00', name: '', transportType: 'walk', transportTime: 10 };
                     showEditModal.value = true;
                 };
-
                 const editItem = (item) => {
                     isEditing.value = true;
                     editForm.value = { ...item };
                     editIndex = itineraryData.value[currentDay.value].findIndex(i => i.id === item.id);
                     showEditModal.value = true;
                 };
-
                 const saveItinerary = () => {
                     if(!editForm.value.name) return alert('請填寫名稱');
-                    if (isEditing.value) {
-                        itineraryData.value[currentDay.value][editIndex] = { ...editForm.value };
-                    } else {
+                    if (isEditing.value) itineraryData.value[currentDay.value][editIndex] = { ...editForm.value };
+                    else {
                         editForm.value.id = Date.now();
-                        if(!itineraryData.value[currentDay.value]) itineraryData.value[currentDay.value] = [];
                         itineraryData.value[currentDay.value].push({ ...editForm.value });
-                        // 依照時間排序
                         itineraryData.value[currentDay.value].sort((a,b) => a.time.localeCompare(b.time));
                     }
                     showEditModal.value = false;
                 };
-
                 const confirmDelete = () => {
                     if(confirm('確定要刪除這個行程嗎？')) {
                         itineraryData.value[currentDay.value].splice(editIndex, 1);
@@ -445,36 +526,64 @@
                     }
                 };
 
-                const deleteExpense = (id) => { expenses.value = expenses.value.filter(e => e.id !== id); };
-                const deleteShopping = (id) => { shoppingList.value = shoppingList.value.filter(s => s.id !== id); };
-
-                // 簡單的 Canvas 圖片壓縮範例 (綁定在 input type="file" 的 change 事件上)
-                const compressImage = (file, callback) => {
+                const handleImageUpload = (event, type) => {
+                    const file = event.target.files[0];
+                    if (!file) return;
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         const img = new Image();
                         img.onload = () => {
                             const canvas = document.createElement('canvas');
-                            const ctx = canvas.getContext('2d');
                             const MAX_WIDTH = 600;
                             const scaleSize = MAX_WIDTH / img.width;
                             canvas.width = MAX_WIDTH;
                             canvas.height = img.height * scaleSize;
+                            const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            callback(canvas.toDataURL('image/jpeg', 0.6)); // 壓縮為 60% 品質 Base64
+                            const base64 = canvas.toDataURL('image/jpeg', 0.6);
+                            if(type === 'shopping') shoppingForm.value.img = base64;
+                            if(type === 'expense') expenseForm.value.img = base64;
                         };
                         img.src = e.target.result;
                     };
                     reader.readAsDataURL(file);
                 };
 
+                const showShoppingModal = ref(false);
+                const shoppingForm = ref({});
+                const openShoppingModal = () => { shoppingForm.value = { name: '', img: '' }; showShoppingModal.value = true; };
+                const saveShopping = () => {
+                    if(!shoppingForm.value.name) return alert('請輸入商品名稱');
+                    shoppingList.value.push({ id: Date.now(), ...shoppingForm.value });
+                    showShoppingModal.value = false;
+                };
+                const deleteShopping = (id) => shoppingList.value = shoppingList.value.filter(s => s.id !== id);
+
+                const showExpenseModal = ref(false);
+                const expenseForm = ref({});
+                const openExpenseModal = () => {
+                    expenseForm.value = { category: 'food', name: '', date: new Date().toISOString().split('T')[0], amount: '', payment: 'Cash', img: '' };
+                    showExpenseModal.value = true;
+                };
+                const saveExpense = () => {
+                    if(!expenseForm.value.name || !expenseForm.value.amount) return alert('請填寫完整資訊');
+                    expenses.value.unshift({ id: Date.now(), ...expenseForm.value });
+                    showExpenseModal.value = false;
+                };
+                const deleteExpense = (id) => expenses.value = expenses.value.filter(e => e.id !== id);
+
+                onMounted(() => {
+                    fetchExchangeRate();
+                });
+
                 return {
-                    currentTab, tabs, days, currentDay, itineraryData, currentItinerary,
-                    weather, exchangeRate, calcAud,
+                    currentTab, tabs, days, currentDay, itineraryData, currentItinerary, guideSpots,
+                    weather, exchangeRate, isRateLive, calcAud,
                     shoppingList, expenses, totalExpenses, checklist,
                     getCategoryName, getTransportIcon, getExpenseIcon, openMaps,
                     itineraryList, showEditModal, isEditing, editForm, openAddModal, editItem, saveItinerary, confirmDelete,
-                    deleteExpense, deleteShopping
+                    showShoppingModal, shoppingForm, openShoppingModal, saveShopping, deleteShopping,
+                    showExpenseModal, expenseForm, openExpenseModal, saveExpense, deleteExpense, handleImageUpload
                 };
             }
         }).mount('#app');
