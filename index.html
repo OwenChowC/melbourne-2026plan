@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>墨爾本十月之旅</title>
+    
+    <!-- 加入 Web App 支援與 Logo 圖標 (加到主畫面用) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="墨爾本之旅">
+    <!-- 請將你的 Logo 圖片命名為 logo.png 並放在同一資料夾下 -->
+    <link rel="apple-touch-icon" href="logo.jpg">
+    <link rel="icon" type="image/png" href="logo.jpg">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Vue 3 -->
@@ -44,7 +53,7 @@
 <body class="text-gray-800 antialiased overflow-x-hidden selection:bg-aus-green selection:text-white">
     <div id="app" class="min-h-screen flex flex-col relative pb-20 pb-safe">
         
-        <!-- 修正 1: 滿版頁首 Banner，無邊框空隙 -->
+        <!-- 滿版頁首 Banner，無邊框空隙 -->
         <header class="w-full h-[250px] relative overflow-hidden rounded-b-[40px] z-0 shadow-md bg-aus-green">
             <img src="Banner.jpg" alt="Banner" class="w-full h-full object-cover object-center" />
             <div class="absolute inset-0 bg-black/15"></div>
@@ -85,14 +94,20 @@
                             <div class="bg-white rounded-2xl p-4 shadow-sm flex flex-col gap-2 relative overflow-hidden" 
                                  :class="{'border-l-4 border-aus-accent bg-amber-50/30': item.type === 'flight'}">
                                 <div class="flex justify-between items-start">
-                                    <div class="flex-1 cursor-pointer" @click="openMaps(item.name)">
+                                    <div class="flex-1 cursor-pointer pr-2" @click="openMaps(item.name)">
                                         <div class="flex items-center gap-2">
                                             <span class="text-xs px-2 py-1 bg-aus-light text-aus-green rounded-lg">{{ item.time }}</span>
                                             <span class="text-xs font-bold px-2 py-1 bg-gray-100 text-gray-600 rounded-lg">{{ getCategoryName(item.category) }}</span>
                                         </div>
                                         <h3 class="text-lg font-bold text-gray-800 mt-2">{{ item.name }}</h3>
                                     </div>
-                                    <button @click="editItem(item)" class="text-gray-300 hover:text-aus-green p-2"><i class="fa-solid fa-pen"></i></button>
+                                    
+                                    <!-- 新增拖曳把手與編輯按鈕 (直向排列) -->
+                                    <div class="flex flex-col items-center gap-3 mt-1">
+                                        <button @click="editItem(item)" class="text-gray-300 hover:text-aus-green"><i class="fa-solid fa-pen"></i></button>
+                                        <!-- 只有按住這個三條線的 Icon 才能進行拖曳 -->
+                                        <div class="drag-handle text-gray-200 hover:text-gray-400 cursor-move text-lg touch-none p-1"><i class="fa-solid fa-grip-lines"></i></div>
+                                    </div>
                                 </div>
                                 <div v-if="item.notes" class="text-sm text-gray-500 mt-1"><i class="fa-solid fa-circle-info mr-1"></i> {{ item.notes }}</div>
                             </div>
@@ -191,7 +206,6 @@
                         </ul>
                     </div>
 
-                    <!-- 修正 2: 最新動態匯率 -->
                     <div class="bg-white rounded-2xl p-5 shadow-sm">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="font-bold text-aus-dark"><i class="fa-solid fa-money-bill-transfer mr-2"></i>最新匯率換算 (AUD ➔ HKD)</h3>
@@ -408,7 +422,6 @@
                     ]
                 });
 
-                // 修正 3: 完整收錄所有行程景點的深度導覽資料庫
                 const guideSpots = ref([
                     { title: '維多利亞女王市場 (Queen Victoria Market)', img: 'https://www.visitvictoria.com/-/media/atdw/melbourne/see-and-do/shopping-and-fashion/markets/c8d844df766465a5402fde01ce87770a_1600x1200.jpeg?ts=20220901330431', desc: '南半球最大的露天市場，自1878年營運至今。這裡有新鮮海鮮、熱甜甜圈餐車、熱帶水果以及各類澳洲在地紀念品，是體現墨爾本庶民生活的核心景點。' },
                     { title: '德格雷夫斯街 (Degraves Street)', img: 'https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Degraves_Street%2C_Melbourne%2C_February_2022.jpg/1280px-Degraves_Street%2C_Melbourne%2C_February_2022.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail', desc: '墨爾本獨一無二的「巷弄咖啡文化」代表。窄小的巷道兩旁密佈著露天咖啡座，空氣中瀰漫著濃郁的 Flat White 咖啡香。' },
@@ -434,7 +447,6 @@
                 const isRateLive = ref(false);
                 const calcAud = ref(100);
 
-                // 修正 2: 連線取得最新 AUD ➔ HKD 匯率 API
                 const fetchExchangeRate = async () => {
                     try {
                         const res = await fetch('https://open.er-api.com/v6/latest/AUD');
@@ -483,6 +495,9 @@
                         if (itineraryList.value) {
                             new Sortable(itineraryList.value, {
                                 animation: 150,
+                                handle: '.drag-handle', // <--- 限制只有抓取這個 class 才能拖曳
+                                delay: 100,             // <--- 加入微小的延遲，防止觸發過度敏感
+                                delayOnTouchOnly: true, // <--- 確保只在觸控裝置上啟用延遲
                                 onEnd: (evt) => {
                                     const list = itineraryData.value[currentDay.value];
                                     const item = list.splice(evt.oldIndex, 1)[0];
